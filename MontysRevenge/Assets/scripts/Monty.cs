@@ -1,18 +1,35 @@
+using System;
 using UnityEngine;
 
 public class Monty : MonoBehaviour
 {
     public EstadosMonty estadoAtual = EstadosMonty.Buscando;
-    public  Transform buracoAlvo;
+    public Transform buracoAlvo;
+    public Buraco buracoAtual;
+
+    void Start()
+    {
+        MontyController.instance.MontyDisponivel(this);
+    }
     
     void Update()
     {
-        if(estadoAtual == EstadosMonty.Seguindo)
+        if(estadoAtual == EstadosMonty.Seguindo && buracoAlvo != null)
         {
             move();
         }
-        // se não
-        // idle
+
+        if (estadoAtual == EstadosMonty.NoBuraco)
+        {
+            if (buracoAtual.temPlayer)
+            {
+                bater();    
+            }
+            else
+            {
+                MontyController.instance.MontyDisponivel(this);    
+            }
+        }
     }
 
     void move()
@@ -22,26 +39,31 @@ public class Monty : MonoBehaviour
             , buracoAlvo.position
             , MontyController.instance.speed * Time.deltaTime);
     }
-
-    void chegouNoBuraco()
-    {
-        estadoAtual = EstadosMonty.Buscando; 
-        // verifica player ainda ali 
-        // bate 
-        MontyController.instance.MontyDisponivel(this);
+    public void recebeAlvo(Transform buraco){
+        buracoAlvo = buraco;
+        estadoAtual = EstadosMonty.Seguindo;
     }
-    
+
+    public void bater()
+    {
+        Debug.Log("bate");
+        new WaitForSeconds(1.5f);
+    }
     
     private void OnTriggerEnter(Collider obj)
     {
         if (obj.CompareTag("Buraco"))
         {
-            chegouNoBuraco();
+            Debug.Log("trigger");
+            buracoAtual = obj.gameObject.GetComponent<Buraco>();
+            estadoAtual = EstadosMonty.NoBuraco;
         }
     }
+    
 }
 
 public enum EstadosMonty{
     Buscando,
-    Seguindo
+    Seguindo,
+    NoBuraco
 }

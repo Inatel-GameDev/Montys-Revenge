@@ -24,11 +24,13 @@ public class MontyController : MonoBehaviour
     {
         foreach (var buraco in posicaoBuracos)
         {
-            if (!buraco.temPlayer) continue;
+            if (!buraco.temPlayer || buraco.temMonty) continue;
             if (montys.Any())
             {
                 Debug.Log("ordena");
+                buraco.temMonty = true;
                 ordenaMonty(montys.Dequeue(), buraco.transform);
+                break;
             }
         }
     }

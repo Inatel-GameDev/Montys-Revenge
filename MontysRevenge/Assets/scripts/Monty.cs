@@ -8,6 +8,7 @@ public enum EstadosMonty{
 }
 
 /*
+ Estados
  Buscando
     Entrada: @ Start, 
              @ Não ter um alvo para seguir ou bater & nao ter um player disponivel, 
@@ -75,9 +76,7 @@ public class Monty : MonoBehaviour
                 estadoAtual = EstadosMonty.Buscando;
                 MontyController.instance.MontyDisponivel(this);
             }
-            
         }
-        
     }
 
     void move()
@@ -99,6 +98,8 @@ public class Monty : MonoBehaviour
     {
         Debug.Log("bate");
         yield return new WaitForSeconds(1.5f);
+        buracoAtual.temMonty = false;
+        buracoAtual.temPlayer = false;
         buracoAtual = null;
         estadoAtual = EstadosMonty.Buscando;
         MontyController.instance.MontyDisponivel(this);

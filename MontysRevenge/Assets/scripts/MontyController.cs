@@ -42,8 +42,5 @@ public class MontyController : MonoBehaviour
     {
         montys.Enqueue(monty);    
     }
-
-    
-    
     
 }

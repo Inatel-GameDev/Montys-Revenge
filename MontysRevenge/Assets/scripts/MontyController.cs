@@ -6,11 +6,15 @@ using UnityEngine.UIElements;
 public class MontyController : MonoBehaviour
 {
     public static MontyController instance; 
-    [SerializeField] private Queue<Monty> montys;
+    [SerializeField] private Queue<Monty> montys = new Queue<Monty>();
     [SerializeField] private Buraco[] posicaoBuracos;
      public float speed = 5.0f;
      
-    
+     private void Awake()
+     {
+         instance = this;
+     }
+     
     void Update()
     {
         verificaJogadores();
@@ -18,17 +22,20 @@ public class MontyController : MonoBehaviour
 
     void verificaJogadores()
     {
-        for (int i = 0; i < posicaoBuracos.Length ; i++) {
-            if (posicaoBuracos[i].temPlayer) {
-                ordenaMonty(montys.Dequeue(), posicaoBuracos[i].transform);
+        foreach (var buraco in posicaoBuracos)
+        {
+            if (!buraco.temPlayer) continue;
+            if (montys.Any())
+            {
+                Debug.Log("ordena");
+                ordenaMonty(montys.Dequeue(), buraco.transform);
             }
         }
     }
 
     public void ordenaMonty(Monty monty, Transform buraco)
     {
-        monty.buracoAlvo = buraco;
-        monty.estadoAtual = EstadosMonty.Seguindo;
+        monty.recebeAlvo(buraco);
     }
 
     public void MontyDisponivel(Monty monty)

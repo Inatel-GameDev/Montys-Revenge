@@ -4,6 +4,7 @@ public class Buraco : MonoBehaviour
 {
     public bool temPlayer;
     public bool temMonty;
+    public int pos;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

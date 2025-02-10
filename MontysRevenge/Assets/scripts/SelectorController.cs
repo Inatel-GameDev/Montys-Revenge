@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Linq.Expressions;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public enum InputDirection
@@ -19,7 +17,6 @@ public enum InputDirection
 public class SelectorController : MonoBehaviour
 {
     public GameObject[] buracos;
-    public int i;
     public Buraco buracoAtual;
     public GameObject buracoInicial;
     public PlayerController player;
@@ -30,6 +27,7 @@ public class SelectorController : MonoBehaviour
     {
         canMove = true;
         transform.SetParent(buracoInicial.transform);
+        player.CoroutineFinished += () => canMove = true; // Olha ele usando expressão lambda todo foda todo csharp
     }
 
     // Método chamado pelo Player Input
@@ -68,17 +66,14 @@ public class SelectorController : MonoBehaviour
         return InputDirection.None;
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
+    public void OnAttack()
     {
-        if (context.performed)
-        {
-        Debug.Log("a");
+        Debug.Log(1);
         if(player.isActiveAndEnabled){
             StartCoroutine(player.Move(1));
         }else{
             player.gameObject.SetActive(true);
             StartCoroutine(player.Move(-1));
-        }
         }
     }
 
@@ -89,15 +84,18 @@ public class SelectorController : MonoBehaviour
         if(canMove){
             Select();
         }
+        if(player.isOut){
+            canMove = false;
+        }
     }
 
     private void Select(){
         switch(buracoAtual.pos){
             case 0:
-            if(dir == InputDirection.BottomLeft || dir == InputDirection.Bottom){
+            if(dir == InputDirection.BottomLeft || dir == InputDirection.Bottom || dir == InputDirection.Left){
                 GoTo(2);
             }
-            if(dir == InputDirection.BottomRight){GoTo(3);}
+            if(dir == InputDirection.BottomRight || dir == InputDirection.Right ){GoTo(3);}
             break;
 
             case 1:

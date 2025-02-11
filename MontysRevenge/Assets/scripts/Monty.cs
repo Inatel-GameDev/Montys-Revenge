@@ -45,10 +45,10 @@ public class Monty : MonoBehaviour
         // Comportamento
         MontyController.instance.MontyDisponivel(this);
     }
-    
+
     void Update()
     {
-        if(batendo)
+        if (batendo)
             return;
         // Condição de entrada
         if (estadoAtual != EstadosMonty.Buscando)
@@ -61,7 +61,7 @@ public class Monty : MonoBehaviour
 
 
         // Comportamento  
-        if(estadoAtual == EstadosMonty.Seguindo && buracoAlvo != null)
+        if (estadoAtual == EstadosMonty.Seguindo && buracoAlvo != null)
         {
             move();
         }
@@ -72,6 +72,7 @@ public class Monty : MonoBehaviour
             {
                 batendo = true;
                 StartCoroutine(bater());
+                // travar player
             }
             else
             {
@@ -83,13 +84,13 @@ public class Monty : MonoBehaviour
 
     void move()
     {
-        Vector3 pos = new Vector3(buracoAlvo.position.x,0,buracoAlvo.position.z);
+        Vector3 pos = new Vector3(buracoAlvo.position.x, 0, buracoAlvo.position.z);
         transform.position = Vector3.MoveTowards(
             transform.position,
             pos
             , MontyController.instance.speed * Time.deltaTime);
     }
-    
+
     // Condição entrada 
     public void recebeAlvo(Transform buraco)
     {
@@ -108,17 +109,21 @@ public class Monty : MonoBehaviour
         MontyController.instance.MontyDisponivel(this);
         batendo = false;
     }
-    
-    
-    private void OnTriggerStay(Collider obj){
+
+
+    private void OnTriggerStay(Collider obj)
+    {
         // Condição de entrada
-        if (obj.CompareTag("Buraco") && estadoAtual != EstadosMonty.Atacando)
-        {
-            buracoAlvo = null;
-            buracoAtual = obj.gameObject.GetComponent<Buraco>();
-            estadoAtual = EstadosMonty.Atacando;
+        if (obj.CompareTag("Buraco")) {
+            Transform bu = obj.gameObject.GetComponent<Buraco>().transform;
+            if (estadoAtual != EstadosMonty.Atacando && bu == buracoAlvo)
+            {
+                buracoAlvo = null;
+                buracoAtual = obj.gameObject.GetComponent<Buraco>();
+                estadoAtual = EstadosMonty.Atacando;
+            }
         }
     }
-    
+
 }
 

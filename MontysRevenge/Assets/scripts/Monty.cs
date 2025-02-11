@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum EstadosMonty{
     Buscando,
@@ -58,7 +59,8 @@ public class Monty : MonoBehaviour
             }
         }
 
-        // Comportamento
+
+        // Comportamento  
         if(estadoAtual == EstadosMonty.Seguindo && buracoAlvo != null)
         {
             move();
@@ -81,9 +83,10 @@ public class Monty : MonoBehaviour
 
     void move()
     {
+        Vector3 pos = new Vector3(buracoAlvo.position.x,0,buracoAlvo.position.z);
         transform.position = Vector3.MoveTowards(
-            transform.position
-            , buracoAlvo.position
+            transform.position,
+            pos
             , MontyController.instance.speed * Time.deltaTime);
     }
     

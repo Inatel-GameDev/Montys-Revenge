@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public bool isOut;
     public bool isHit;
     public event System.Action CoroutineFinished;
+    public SelectorController selector;
 
     public TMP_Text nome_txt;
     public TMP_Text pontos_txt;
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         if(dir == 1){
+            selector.FlagBuraco();
             isOut = false;
             CoroutineFinished?.Invoke();
             gameObject.SetActive(false);

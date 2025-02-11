@@ -87,7 +87,19 @@ public class SelectorController : MonoBehaviour
         if(player.isOut){
             canMove = false;
         }
+
+        if (player.isOut)
+        {
+            buracoAtual.temPlayer = true;
+        }
     }
+
+    public void FlagBuraco()
+    {
+        buracoAtual.temPlayer = false;
+        buracoAtual.temMonty = false;
+    }
+    
 
     private void Select(){
         switch(buracoAtual.pos){

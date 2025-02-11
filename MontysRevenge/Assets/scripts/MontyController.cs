@@ -29,13 +29,13 @@ public class MontyController : MonoBehaviour
             {
                 Debug.Log("ordena");
                 buraco.temMonty = true;
-                ordenaMonty(montys.Dequeue(), buraco.transform);
+                ordenaMonty(montys.Dequeue(), buraco);
                 break;
             }
         }
     }
 
-    public void ordenaMonty(Monty monty, Transform buraco)
+    public void ordenaMonty(Monty monty, Buraco buraco)
     {
         monty.recebeAlvo(buraco);
     }

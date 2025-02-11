@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -33,7 +34,7 @@ Atacando
 public class Monty : MonoBehaviour
 {
     public EstadosMonty estadoAtual;
-    public Transform buracoAlvo;
+    public Buraco buracoAlvo;
     public Buraco buracoAtual;
     public bool batendo;
 
@@ -61,9 +62,18 @@ public class Monty : MonoBehaviour
 
 
         // Comportamento  
-        if (estadoAtual == EstadosMonty.Seguindo && buracoAlvo != null)
+        if (estadoAtual == EstadosMonty.Seguindo && buracoAlvo != null )
         {
-            move();
+            if (!buracoAlvo.temPlayer)
+            {
+                buracoAlvo = null;
+                estadoAtual = EstadosMonty.Buscando;
+                MontyController.instance.MontyDisponivel(this);
+            }
+            else
+            {
+                move();
+            }
         }
 
         if (estadoAtual == EstadosMonty.Atacando)
@@ -84,7 +94,7 @@ public class Monty : MonoBehaviour
 
     void move()
     {
-        Vector3 pos = new Vector3(buracoAlvo.position.x, 0, buracoAlvo.position.z);
+        Vector3 pos = new Vector3(buracoAlvo.transform.position.x, 0, buracoAlvo.transform.position.z);
         transform.position = Vector3.MoveTowards(
             transform.position,
             pos
@@ -92,7 +102,7 @@ public class Monty : MonoBehaviour
     }
 
     // Condição entrada 
-    public void recebeAlvo(Transform buraco)
+    public void recebeAlvo(Buraco buraco)
     {
         buracoAlvo = buraco;
         estadoAtual = EstadosMonty.Seguindo;
@@ -111,11 +121,11 @@ public class Monty : MonoBehaviour
     }
 
 
-    private void OnTriggerStay(Collider obj)
+    private void OnCollisionStay(Collision obj)
     {
         // Condição de entrada
-        if (obj.CompareTag("Buraco")) {
-            Transform bu = obj.gameObject.GetComponent<Buraco>().transform;
+        if (obj.gameObject.CompareTag("Buraco")) {
+            Buraco bu = obj.gameObject.GetComponent<Buraco>();
             if (estadoAtual != EstadosMonty.Atacando && bu == buracoAlvo)
             {
                 buracoAlvo = null;

@@ -94,7 +94,13 @@ public class Monty : MonoBehaviour
 
     void move()
     {
-        Vector3 pos = new Vector3(buracoAlvo.transform.position.x, 0, buracoAlvo.transform.position.z);
+        
+        Vector3 pos = new Vector3(buracoAlvo.transform.position.x, 0.3f, buracoAlvo.transform.position.z);
+        
+        Quaternion targetRotation = Quaternion.LookRotation(pos - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
+        //transform.rotation = targetRotation;
+        
         transform.position = Vector3.MoveTowards(
             transform.position,
             pos
@@ -120,20 +126,16 @@ public class Monty : MonoBehaviour
         batendo = false;
     }
 
-
-    private void OnCollisionStay(Collision obj)
+    public void verificaBater(Buraco bu)
     {
-        // Condição de entrada
-        if (obj.gameObject.CompareTag("Buraco")) {
-            Buraco bu = obj.gameObject.GetComponent<Buraco>();
-            if (estadoAtual != EstadosMonty.Atacando && bu == buracoAlvo)
-            {
-                buracoAlvo = null;
-                buracoAtual = obj.gameObject.GetComponent<Buraco>();
-                estadoAtual = EstadosMonty.Atacando;
-            }
+        if (estadoAtual != EstadosMonty.Atacando && bu == buracoAlvo)
+        {
+            Debug.Log("b");
+            buracoAlvo = null;
+            buracoAtual = bu;
+            estadoAtual = EstadosMonty.Atacando;
         }
     }
-
+    
 }
 

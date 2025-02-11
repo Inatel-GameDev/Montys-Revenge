@@ -6,8 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MenuStart.unity
+    guid: dac2bf0e211274243b89d64f595ee0d6
+  - enabled: 1
+    path: Assets/Scenes/Juntando.unity
+    guid: 2e49831cb55db5a469b9b442ab4b9ee6
+  - enabled: 1
     path: Assets/Scenes/Felipe.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/dju.unity
+    guid: b09adffc585e309428834a84bd993cf1
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: f4ac3592a6c86ac4b910a94ecfa44dd0, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

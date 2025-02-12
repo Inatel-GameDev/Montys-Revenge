@@ -83,17 +83,31 @@ public class SelectorController : MonoBehaviour
     {
         if(canMove){
             Select();
-        }
+        } 
         if(player.isOut){
             canMove = false;
         }
-
+        // ToDo ta bugando o cooldown 
+        if (player.isHit)
+        {
+            Debug.Log("Atingindo");
+            StartCoroutine(Stun());
+        }
+        // flag para o monty começar a seguir 
         if (player.isOut)
         {
             buracoAtual.temPlayer = true;
         }
     }
 
+    private IEnumerator Stun()
+    {
+        canMove = false;
+        yield return new WaitForSeconds(1);
+        player.gameObject.SetActive(false);
+        canMove = true;
+    }
+    
     public void FlagBuraco()
     {
         buracoAtual.temPlayer = false;

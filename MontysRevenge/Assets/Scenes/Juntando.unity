@@ -4195,6 +4195,7 @@ MonoBehaviour:
   buracoAlvo: {fileID: 0}
   buracoAtual: {fileID: 0}
   batendo: 0
+  selector: {fileID: 1059413135}
 --- !u!54 &1311033002
 Rigidbody:
   m_ObjectHideFlags: 0

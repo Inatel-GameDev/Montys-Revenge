@@ -37,6 +37,7 @@ public class Monty : MonoBehaviour
     public Buraco buracoAlvo;
     public Buraco buracoAtual;
     public bool batendo;
+    public SelectorController selector;
 
     void Start()
     {
@@ -116,8 +117,10 @@ public class Monty : MonoBehaviour
 
     IEnumerator bater()
     {
+        selector.player.isHit = true;
         Debug.Log("bate");
         yield return new WaitForSeconds(1.5f);
+        selector.player.isHit = false;
         buracoAtual.temMonty = false;
         buracoAtual.temPlayer = false;
         buracoAtual = null;

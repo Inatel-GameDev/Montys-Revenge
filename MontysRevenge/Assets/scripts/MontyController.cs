@@ -27,7 +27,6 @@ public class MontyController : MonoBehaviour
             if (!buraco.temPlayer || buraco.temMonty) continue;
             if (montys.Any())
             {
-                Debug.Log("ordena");
                 buraco.temMonty = true;
                 ordenaMonty(montys.Dequeue(), buraco);
                 break;

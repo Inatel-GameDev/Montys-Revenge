@@ -119,6 +119,7 @@ public class Monty : MonoBehaviour
     {
         selector.player.isHit = true;
         Debug.Log("bate");
+        selector.StunaPlayer();
         yield return new WaitForSeconds(1.5f);
         selector.player.isHit = false;
         buracoAtual.temMonty = false;

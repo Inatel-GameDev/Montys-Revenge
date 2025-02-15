@@ -22,7 +22,7 @@ public class SelectorController : MonoBehaviour
     public PlayerController player;
     public bool canMove;
     InputDirection dir;
-  
+
     void Start()
     {
         canMove = true;
@@ -68,10 +68,13 @@ public class SelectorController : MonoBehaviour
 
     public void OnAttack()
     {
-        Debug.Log(1);
-        if(player.isActiveAndEnabled){
+        //Debug.Log(1);
+        if (player.isActiveAndEnabled)
+        {
             StartCoroutine(player.Move(1));
-        }else{
+        }
+        else
+        {
             player.gameObject.SetActive(true);
             StartCoroutine(player.Move(-1));
         }
@@ -81,18 +84,16 @@ public class SelectorController : MonoBehaviour
     //Fazer um tempo de offhand dps de mudar pra um buraco novo
     private void Update()
     {
-        if(canMove){
+        if (canMove)
+        {
             Select();
-        } 
-        if(player.isOut){
+        }
+
+        if (player.isOut)
+        {
             canMove = false;
         }
-        // ToDo ta bugando o cooldown 
-        if (player.isHit)
-        {
-            Debug.Log("Atingindo");
-            StartCoroutine(Stun());
-        }
+
         // flag para o monty começar a seguir 
         if (player.isOut)
         {
@@ -100,10 +101,17 @@ public class SelectorController : MonoBehaviour
         }
     }
 
-    private IEnumerator Stun()
+    public void StunaPlayer()
+    {
+        Debug.Log("Atingindo");
+        StartCoroutine(Stun());
+    }
+
+private IEnumerator Stun()
     {
         canMove = false;
         yield return new WaitForSeconds(1);
+        StartCoroutine(player.Move(1));
         player.gameObject.SetActive(false);
         canMove = true;
     }

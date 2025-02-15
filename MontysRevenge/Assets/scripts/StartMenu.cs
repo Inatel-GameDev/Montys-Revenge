@@ -6,12 +6,17 @@ public class StartMenu : MonoBehaviour
 {
     public Button newGame;
     public Button quitGame;
-    
+    public Button howToPlay;
+    public Button voltar;
+    public Canvas startMenu;
+    public Canvas tutorial;
 
     private void Start()
     {
         newGame.onClick.AddListener(StartNewGame);    
-        quitGame.onClick.AddListener(Quit);    
+        quitGame.onClick.AddListener(Quit);
+        howToPlay.onClick.AddListener(HowToPlay);
+        voltar.onClick.AddListener(Voltar);
     }
 
 
@@ -25,5 +30,16 @@ public class StartMenu : MonoBehaviour
         Application.Quit();
     }
     
+    private void HowToPlay()
+    {
+        tutorial.gameObject.SetActive(true);
+        startMenu.gameObject.SetActive(false);
+    }
+
+    private void Voltar()
+    {
+        startMenu.gameObject.SetActive(true);
+        tutorial.gameObject.SetActive(false);
+    }
     
 }

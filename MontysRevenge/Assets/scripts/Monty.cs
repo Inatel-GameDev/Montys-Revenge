@@ -6,7 +6,8 @@ using UnityEngine.UIElements;
 public enum EstadosMonty{
     Buscando,
     Seguindo,
-    Atacando
+    Atacando,
+    Espera
 }
 
 /*
@@ -50,6 +51,8 @@ public class Monty : MonoBehaviour
 
     void Update()
     {
+        if(estadoAtual == EstadosMonty.Espera)
+            return;
         if (batendo)
             return;
         // Condição de entrada

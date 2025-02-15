@@ -8,8 +8,11 @@ public class MontyController : MonoBehaviour
     public static MontyController instance; 
     [SerializeField] private Queue<Monty> montys = new Queue<Monty>();
     [SerializeField] private Buraco[] posicaoBuracos;
-     public float speed = 5.0f;
-     
+    [Header("Ajustes para Dificuldade")] 
+    public float speed = 1f;
+    public float tempoDeBatidas = 1.2f;
+    public float velocidadeDeGiro = 5f;
+    
      private void Awake()
      {
          instance = this;

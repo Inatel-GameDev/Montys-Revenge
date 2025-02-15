@@ -95,11 +95,11 @@ public class Monty : MonoBehaviour
 
     void move()
     {
-        
+        // 0.3 altura para nao entrar no chao 
         Vector3 pos = new Vector3(buracoAlvo.transform.position.x, 0.3f, buracoAlvo.transform.position.z);
         
         Quaternion targetRotation = Quaternion.LookRotation(pos - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, MontyController.instance.velocidadeDeGiro * Time.deltaTime);
         //transform.rotation = targetRotation;
         
         transform.position = Vector3.MoveTowards(
@@ -120,7 +120,7 @@ public class Monty : MonoBehaviour
         selector.player.isHit = true;
         Debug.Log("bate");
         selector.StunaPlayer();
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(MontyController.instance.tempoDeBatidas);
         selector.player.isHit = false;
         buracoAtual.temMonty = false;
         buracoAtual.temPlayer = false;

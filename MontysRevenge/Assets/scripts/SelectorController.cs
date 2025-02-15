@@ -69,7 +69,7 @@ public class SelectorController : MonoBehaviour
     public void OnAttack()
     {
         //Debug.Log(1);
-        if (player.isActiveAndEnabled)
+        if (player.isActiveAndEnabled && !player.isHit)
         {
             StartCoroutine(player.Move(1));
         }

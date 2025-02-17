@@ -17,8 +17,9 @@ public enum InputDirection
 public class SelectorController : MonoBehaviour
 {
     public GameObject[] buracos;
-    public Buraco buracoAtual;
+    private Buraco buracoAtual;
     public GameObject buracoInicial;
+    public GameObject Placar;
     public PlayerController player;
     public bool canMove;
     InputDirection dir;
@@ -28,6 +29,9 @@ public class SelectorController : MonoBehaviour
         canMove = true;
         transform.SetParent(buracoInicial.transform);
         player.CoroutineFinished += () => canMove = true; // Olha ele usando expressão lambda todo foda todo csharp
+        buracoAtual = buracoInicial.GetComponent<Buraco>();
+        transform.localPosition = new Vector3(0,0.71f,0);
+        Placar.SetActive(true);
     }
 
     // Método chamado pelo Player Input
@@ -68,15 +72,14 @@ public class SelectorController : MonoBehaviour
 
     public void OnAttack()
     {
-        //Debug.Log(1);
-        if (player.isActiveAndEnabled && !player.isHit)
-        {
-            StartCoroutine(player.Move(1));
-        }
-        else
-        {
-            player.gameObject.SetActive(true);
-            StartCoroutine(player.Move(-1));
+        if(!player.isHit){
+            if (player.isActiveAndEnabled){
+                StartCoroutine(player.Move(1));
+            }
+            else{
+                player.gameObject.SetActive(true);
+                StartCoroutine(player.Move(-1));
+            }
         }
     }
 
@@ -112,7 +115,6 @@ private IEnumerator Stun()
         canMove = false;
         yield return new WaitForSeconds(1);
         StartCoroutine(player.Move(1));
-        player.gameObject.SetActive(false);
         canMove = true;
     }
     
@@ -275,6 +277,7 @@ private IEnumerator Stun()
         transform.SetParent(buracos[indexBuraco].transform);
         transform.localPosition = new Vector3(0,0.71f,0);
         buracoAtual = GetComponentInParent<Buraco>();
+        transform.localScale = new(1f+(buracoAtual.transform.childCount/10f), 0.02f, 1f+(buracoAtual.transform.childCount/10f));
         StartCoroutine(Cooldown());
     }
 

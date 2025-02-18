@@ -10,7 +10,9 @@ public class GameController : MonoBehaviour
     public GameObject InitialScreen;
     public GameObject Blackout;
     public GameObject Begin;
+    public GameObject Wins;
     public bool PlayMode = false;
+    public PlayerJoinHandler PlayerJoin;
 
     private void Start()
     {
@@ -25,8 +27,42 @@ public class GameController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Timer -= Time.fixedDeltaTime;
-        timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
+        if (PlayMode)
+        {
+            Timer -= Time.fixedDeltaTime;
+            timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
+        }
+
+        if (Timer <= 0)
+        {
+            
+        }
+    }
+
+    private IEnumerator EndingSequence()
+    {
+        Blackout.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        
+        // Mover camera 
+        
+        PlayerController pAux = PlayerJoin.players[0].GetComponent<PlayerController>();
+        
+        for (int i = 1; i < PlayerJoin.players.Length; i++)
+        {
+            PlayerController p = PlayerJoin.players[i].GetComponent<PlayerController>();
+            if (p.pontos > pAux.pontos)
+            {
+                pAux = p;
+            }
+        }
+        
+        //pAux.transform.SetPositionAndRotation();
+        
+        
+        Blackout.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        Wins.SetActive(true);
     }
 
     private IEnumerator StartIntroSequence()

@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     public GameObject Wins;
     public bool PlayMode = false;
     public PlayerJoinHandler PlayerJoin;
+    public bool ended = false;
 
     private void Start()
     {
@@ -33,32 +34,39 @@ public class GameController : MonoBehaviour
             timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
         }
 
-        if (Timer <= 0)
+        if (Timer <= 0 && !ended)
         {
-            
+            StartCoroutine(EndingSequence());
+            ended = true;
         }
     }
 
     private IEnumerator EndingSequence()
     {
+        MontyController.instance.PausaMontys();
         Blackout.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         
         // Mover camera 
+        _camera.transform.position = new Vector3(0, 1.2f, -6.5f); 
+        _camera.transform.rotation = Quaternion.Euler(6.7f, 0, 0);
         
         PlayerController pAux = PlayerJoin.players[0].GetComponent<PlayerController>();
-        
-        for (int i = 1; i < PlayerJoin.players.Length; i++)
+
+        if (PlayerJoin.players.Length > 1)
         {
-            PlayerController p = PlayerJoin.players[i].GetComponent<PlayerController>();
-            if (p.pontos > pAux.pontos)
+            for (int i = 1; i < PlayerJoin.players.Length; i++)
             {
-                pAux = p;
+                PlayerController p = PlayerJoin.players[i].GetComponent<PlayerController>();
+                if (p.pontos > pAux.pontos)
+                {
+                    pAux = p;
+                }
             }
         }
         
-        //pAux.transform.SetPositionAndRotation();
-        
+        // pAux.enabled = true;
+        // pAux.transform.position = new Vector3(0,28.2f,-5.3f);
         
         Blackout.SetActive(false);
         yield return new WaitForSeconds(0.5f);
@@ -102,6 +110,7 @@ public class GameController : MonoBehaviour
         _camera.transform.rotation = targetRotation;
 
         // Ativar PlayMode
+        MontyController.instance.StartMontys();
         PlayMode = true;
     }
 }

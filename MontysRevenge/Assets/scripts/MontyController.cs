@@ -7,6 +7,7 @@ public class MontyController : MonoBehaviour
 {
     public static MontyController instance; 
     [SerializeField] private Queue<Monty> montys = new Queue<Monty>();
+    [SerializeField] private Monty[] montysArray;
     [SerializeField] private Buraco[] posicaoBuracos;
     [Header("Ajustes para Dificuldade")] 
     public float speed = 1f;
@@ -45,6 +46,23 @@ public class MontyController : MonoBehaviour
     public void MontyDisponivel(Monty monty)
     {
         montys.Enqueue(monty);    
+    }
+
+    public void PausaMontys()
+    {
+        foreach (Monty monty in montysArray)
+        {
+            monty.estadoAtual = EstadosMonty.Espera;
+        }
+    }
+
+    public void StartMontys()
+    {
+        foreach (Monty monty in montysArray)
+        {
+            monty.Comeca();
+            
+        }
     }
     
 }

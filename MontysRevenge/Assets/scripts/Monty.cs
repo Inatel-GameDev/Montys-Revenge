@@ -43,12 +43,17 @@ public class Monty : MonoBehaviour
     void Start()
     {
         batendo = false;
+        estadoAtual = EstadosMonty.Espera;
+    }
+
+    public void Comeca()
+    {
         // Condição de entrada
         estadoAtual = EstadosMonty.Buscando;
         // Comportamento
         MontyController.instance.MontyDisponivel(this);
     }
-
+    
     void Update()
     {
         if(estadoAtual == EstadosMonty.Espera)

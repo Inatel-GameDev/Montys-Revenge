@@ -23,6 +23,13 @@ public class InputDeviceTracker : MonoBehaviour
     public void RegisterDevice(InputControl control)
     {
         int deviceId = control.device.deviceId;
+
+         if (control.device is Mouse)
+        {
+            Debug.Log("Mouse detectado, não será registrado.");
+            return; // Não registra o mouse
+        }
+        
         if (!deviceIds.Contains(deviceId) && deviceIds.Count < maxDevices)
         {
             OnConnected?.Invoke();

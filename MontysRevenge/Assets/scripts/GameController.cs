@@ -2,22 +2,34 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class GameController : MonoBehaviour
 {
     public TMP_Text timerText;
-    public float Timer = 30;
+    public float Timer = 3;
     public Camera _camera;
     public GameObject InitialScreen;
     public Image Blackout;
+    public Image Finish_text;
+    public Image Wins_text;
+    public TMP_Text winnerName;
+    public GameObject WinningScreen;
+    public Image Whiteout;
     public GameObject Begin;
     public bool PlayMode = false;
     InputDeviceTracker controles;
     public SelectorController[] jogadores;
+    public GameObject[] podio;
     public Image[] PlayerProfile;
     public Color selectedColor;
     public GameObject[] ReadyText;
     private int playerCount = 0;
+    //
+    public Vector3 endingPosition;
+    private Vector3 initialScale;
+    public  GameObject winnerPosition;
+    public GameObject losers;
 
     private void Start()
     {
@@ -25,31 +37,35 @@ public class GameController : MonoBehaviour
         controles.OnConnected += ShowPlayers;
         InitialScreen.SetActive(true);
         Begin.SetActive(false);
-    }
-
-    public void StartGame(){
-        if(!PlayMode)
-            StartCoroutine(StartIntroSequence());
+        initialScale = Finish_text.transform.localScale * 1.1f;
+        Finish_text.transform.localScale = initialScale;
     }
 
     private void FixedUpdate()
     {
-        Timer -= Time.fixedDeltaTime;
-        timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
-        if(Timer <= 0){
-            StartEndingSequence();
+        if(PlayMode){
+            Timer -= Time.fixedDeltaTime;
+            timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
+            if(Timer <= 0){
+                PlayMode = false;
+                Timer = 0;
+                StartCoroutine(StartEndingSequence());
+            }
         }
-        if(controles.deviceIds.Count >= 2){
-            StartGame();
+    }
+
+    public void StartGame(){
+        Debug.Log("Start");
+        if(controles.deviceIds.Count >= 2 && !PlayMode && Timer > 0){
+            StartCoroutine(StartIntroSequence());
         }
     }
 
     private IEnumerator StartIntroSequence()
     {
         PlayMode = true;
-        // Desativar a tela inicial
-        //InitialScreen.SetActive(false);
-        yield return StartCoroutine(BlackoutTransition());
+
+        yield return StartCoroutine(BlackoutTransition(true));
         // Ativar o blackout por 1 segundo
         AtivarPlayers();
         yield return new WaitForSeconds(1f);
@@ -76,16 +92,21 @@ public class GameController : MonoBehaviour
         // Garantir que a posição final seja precisa
         _camera.transform.position = targetPosition;
         _camera.transform.rotation = targetRotation;
-
     }
 
     private IEnumerator StartEndingSequence(){
         PlayMode = false;
-        yield return new WaitForSeconds(1f);
-        StartCoroutine(BlackoutTransition());
+        yield return StartCoroutine(FadeImages(Finish_text));
+        yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(BlackoutTransition(false));
+        CheckWinner();
+        WinningScreen.SetActive(true);
+        yield return StartCoroutine(FadeImages(Wins_text));
+        StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 1f));
+      
     }
 
-    private IEnumerator BlackoutTransition(){
+    private IEnumerator BlackoutTransition(bool isStart){
         float duration = 2f;
         float halfDuration = duration / 2f;
         // Acender gradualmente
@@ -94,8 +115,15 @@ public class GameController : MonoBehaviour
             SetAlpha(t / halfDuration);
             yield return null;
         }
-        SetAlpha(1); // Garante que fique totalmente visível
-        InitialScreen.SetActive(false);
+        SetAlpha(1); // Garante que fique totalmente
+
+        if(isStart){
+            InitialScreen.SetActive(false);
+        }else{
+            _camera.transform.position = endingPosition;
+            _camera.transform.rotation = Quaternion.Euler(25, _camera.transform.rotation.eulerAngles.y, _camera.transform.rotation.eulerAngles.z);;
+        }
+
         yield return new WaitForSeconds(0.5f);
         // Apagar gradualmente
         for (float t = 0; t < halfDuration; t += Time.deltaTime)
@@ -106,6 +134,61 @@ public class GameController : MonoBehaviour
         SetAlpha(0); // Garante que fique totalmente invisível
     }
 
+    private IEnumerator FadeImages(Image UI_Image)
+    {
+        Vector3 finalScale = initialScale * 0.909f;
+        float elapsedTime = 0f;
+        Color parentInitialColor = UI_Image.color;
+        Color childInitialColor = Whiteout.color;
+
+        while (elapsedTime < 0.15f)
+        {
+            float t = elapsedTime / 0.15f;
+            
+            // Ajustar o alpha das imagens
+            UI_Image.color = new Color(parentInitialColor.r, parentInitialColor.g, parentInitialColor.b, Mathf.Lerp(0f, 1f, t));
+            Whiteout.color = new Color(childInitialColor.r, childInitialColor.g, childInitialColor.b, Mathf.Lerp(1f, 0f, t));
+            UI_Image.transform.localScale = Vector3.Lerp(initialScale, finalScale, t);
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Garantir que os valores finais são aplicados corretamente
+        UI_Image.color = new Color(parentInitialColor.r, parentInitialColor.g, parentInitialColor.b, 1f);
+        Whiteout.color = new Color(childInitialColor.r, childInitialColor.g, childInitialColor.b, 0f);
+
+        yield return new WaitForSeconds(0.5f);
+
+        elapsedTime = 0f;
+        while (elapsedTime < 0.2f)
+        {
+            float t = elapsedTime / 0.2f;
+            
+            // Mover para cima e reduzir a opacidade
+            UI_Image.transform.localPosition = Vector3.Lerp(Vector3.zero, Vector3.zero + new Vector3(0, 15, 0), t);
+            UI_Image.color = new Color(parentInitialColor.r, parentInitialColor.g, parentInitialColor.b, Mathf.Lerp(1f, 0f, t));
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Garantir que os valores finais são aplicados corretamente
+        UI_Image.transform.localPosition = Vector3.zero + new Vector3(0, 15, 0);
+        UI_Image.color = new Color(parentInitialColor.r, parentInitialColor.g, parentInitialColor.b, 0f);
+    }
+
+    private IEnumerator Move(GameObject obj, Vector3 startPos, Vector3 endPos, float time)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < time)
+        {
+            obj.transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / time);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        obj.transform.position = endPos;
+    }
     private void SetAlpha(float alpha)
     {
         if (Blackout != null)
@@ -128,6 +211,29 @@ public class GameController : MonoBehaviour
             jogadores[i].gameObject.SetActive(true);
             jogadores[i].Id = controles.deviceIds[i];
             Debug.Log($"Jogador {jogadores[i].Id} vinculado aos id {controles.deviceIds[i]}");
+        }
+    }
+
+    public void CheckWinner(){
+        if (jogadores == null || jogadores.Length == 0) return;
+
+        // Encontrar o player com mais pontos
+        SelectorController winner = jogadores.OrderByDescending(sc => sc.player.pontos).FirstOrDefault();
+        winnerName.text = winner.player.name;
+        
+        // Posicionar o vencedor na posição desejada
+        if (winner != null)
+        {
+            winner.transform.position = winnerPosition.transform.position;
+        }
+        
+        // Definir os outros players como filhos de groupParent
+        foreach (var sc in jogadores)
+        {
+            if (sc != winner)
+            {
+                sc.transform.SetParent(losers.transform);
+            }
         }
     }
 }

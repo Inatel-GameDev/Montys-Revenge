@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     public bool isHit;
     public event Action CoroutineFinished;
     public SelectorController selector;
-
     public TMP_Text nome_txt;
     public TMP_Text pontos_txt;
     private void Start() {

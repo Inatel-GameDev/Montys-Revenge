@@ -9620,7 +9620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1722462078}
-  Timer: 5
+  Timer: 30
   _camera: {fileID: 1449558446}
   InitialScreen: {fileID: 1159444872}
   Blackout: {fileID: 1023024678}

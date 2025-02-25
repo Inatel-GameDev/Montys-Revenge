@@ -44,9 +44,7 @@ public class Monty : MonoBehaviour
     {
         batendo = false;
         // Condição de entrada
-        estadoAtual = EstadosMonty.Buscando;
-        // Comportamento
-        MontyController.instance.MontyDisponivel(this);
+        estadoAtual = EstadosMonty.Espera;
     }
 
     void Update()
@@ -120,6 +118,7 @@ public class Monty : MonoBehaviour
 
     IEnumerator bater()
     {
+        selector = buracoAtual.GetComponentInChildren<SelectorController>();
         selector.player.isHit = true;
         Debug.Log("bate");
         selector.StunaPlayer();

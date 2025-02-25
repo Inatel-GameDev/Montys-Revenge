@@ -12,6 +12,7 @@ public class MontyController : MonoBehaviour
     public float speed = 1f;
     public float tempoDeBatidas = 1.2f;
     public float velocidadeDeGiro = 5f;
+    public Monty[] montysArray;
     
      private void Awake()
      {
@@ -45,6 +46,24 @@ public class MontyController : MonoBehaviour
     public void MontyDisponivel(Monty monty)
     {
         montys.Enqueue(monty);    
+    }
+
+    public void PausaMontys()
+    {
+        foreach (Monty monty in montysArray)
+        {
+            monty.estadoAtual = EstadosMonty.Espera;
+        }
+    }
+    
+    public void LiberaMontys()
+    {
+        Debug.Log("Libera");
+        foreach (Monty monty in montysArray)
+        {
+            monty.estadoAtual = EstadosMonty.Buscando;
+            MontyDisponivel(monty);
+        }
     }
     
 }

@@ -191,6 +191,17 @@
                 },
                 {
                     "name": "",
+                    "id": "bd7d7aa7-6b22-431e-896a-a4f034b3bfa9",
+                    "path": "<XInputController>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Joystick",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "3ea4d645-4504-4529-b061-ab81934c3752",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -226,6 +237,17 @@
                     "name": "",
                     "id": "35cc1df8-3223-4da5-a145-7470c8194930",
                     "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ae319aa-96c7-4815-b6f1-f7c2025bcd71",
+                    "path": "<XInputController>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",

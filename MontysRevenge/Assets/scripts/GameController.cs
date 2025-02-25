@@ -6,8 +6,9 @@ using System.Linq;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController instance;
     public TMP_Text timerText;
-    public float Timer = 3;
+    public float Timer ;
     public Camera _camera;
     public GameObject InitialScreen;
     public Image Blackout;
@@ -25,12 +26,22 @@ public class GameController : MonoBehaviour
     public Color selectedColor;
     public GameObject[] ReadyText;
     private int playerCount = 0;
+
+    public MontyController montyController;
     //
     public Vector3 endingPosition;
     private Vector3 initialScale;
     public  GameObject winnerPosition;
     public GameObject losers;
 
+    public Canvas telaPause;
+
+    
+    private void Awake()
+    {
+        instance = this;
+    }
+    
     private void Start()
     {
         controles = GetComponentInChildren<InputDeviceTracker>();
@@ -46,6 +57,7 @@ public class GameController : MonoBehaviour
         if(PlayMode){
             Timer -= Time.fixedDeltaTime;
             timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
+            
             if(Timer <= 0){
                 PlayMode = false;
                 Timer = 0;
@@ -63,16 +75,11 @@ public class GameController : MonoBehaviour
 
     private IEnumerator StartIntroSequence()
     {
-        PlayMode = true;
+        montyController.PausaMontys();
+        
 
         yield return StartCoroutine(BlackoutTransition(true));
         // Ativar o blackout por 1 segundo
-        AtivarPlayers();
-        yield return new WaitForSeconds(1f);
-        Begin.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
-        Begin.SetActive(false);
-        yield return new WaitForSeconds(0.2f);
         
         // Aproximar a câmera 4 unidades no eixo Y e rotacionar 30 graus no eixo X
         Vector3 targetPosition = _camera.transform.position + new Vector3(0, 3.1f, -1.7f);
@@ -88,13 +95,25 @@ public class GameController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
+        
         // Garantir que a posição final seja precisa
         _camera.transform.position = targetPosition;
         _camera.transform.rotation = targetRotation;
+        
+        yield return new WaitForSeconds(1f);
+        Begin.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        Begin.SetActive(false);
+        yield return new WaitForSeconds(0.2f);
+        
+        PlayMode = true;
+        AtivarPlayers();
+        
+        montyController.LiberaMontys();
     }
 
     private IEnumerator StartEndingSequence(){
+        montyController.PausaMontys();
         PlayMode = false;
         yield return StartCoroutine(FadeImages(Finish_text));
         yield return new WaitForSeconds(0.2f);
@@ -103,6 +122,8 @@ public class GameController : MonoBehaviour
         WinningScreen.SetActive(true);
         yield return StartCoroutine(FadeImages(Wins_text));
         StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 1f));
+        yield return new WaitForSeconds(2f);
+        telaPause.gameObject.SetActive(true);
       
     }
 
@@ -219,7 +240,7 @@ public class GameController : MonoBehaviour
 
         // Encontrar o player com mais pontos
         SelectorController winner = jogadores.OrderByDescending(sc => sc.player.pontos).FirstOrDefault();
-        winnerName.text = winner.player.name;
+        winnerName.text = winner.player.Nome;
         
         // Posicionar o vencedor na posição desejada
         if (winner != null)

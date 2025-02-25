@@ -76,6 +76,8 @@ public class SelectorController : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        if(!GameController.instance.PlayMode)
+            return;
         if (context.started) // Verifica se o botão foi pressionado
         {
         Debug.Log($"Bateu com device: {context.control.device.deviceId} de id: {Id}");
@@ -134,6 +136,8 @@ private IEnumerator Stun()
     
 
     private void Select(){
+        if(!GameController.instance.PlayMode)
+            return;
         switch(buracoAtual.pos){
             case 0:
             if(dir == InputDirection.BottomLeft || dir == InputDirection.Bottom || dir == InputDirection.Left){

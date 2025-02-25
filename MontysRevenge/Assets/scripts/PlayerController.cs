@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if(!isHit){
+        if(!isHit &&  GameController.instance.PlayMode){
             pontos += Time.fixedDeltaTime;
         }
         pontos_txt.text = pontos.ToString("N" + 2);

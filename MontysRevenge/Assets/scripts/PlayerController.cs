@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     Vector3 initialPosition;
     public bool isOut;
     public bool isHit;
-    public event System.Action CoroutineFinished;
+    public event Action CoroutineFinished;
     public SelectorController selector;
 
     public TMP_Text nome_txt;

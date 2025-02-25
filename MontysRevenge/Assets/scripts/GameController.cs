@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -8,17 +9,22 @@ public class GameController : MonoBehaviour
     public float Timer = 30;
     public Camera _camera;
     public GameObject InitialScreen;
-    public GameObject Blackout;
+    public Image Blackout;
     public GameObject Begin;
-    public GameObject Wins;
     public bool PlayMode = false;
-    public PlayerJoinHandler PlayerJoin;
-    public bool ended = false;
+    InputDeviceTracker controles;
+    public SelectorController[] jogadores;
+    public Image[] PlayerProfile;
+    public Color selectedColor;
+    public GameObject[] ReadyText;
+    private int playerCount = 0;
 
     private void Start()
     {
-       InitialScreen.SetActive(true);
-       Begin.SetActive(false);
+        controles = GetComponentInChildren<InputDeviceTracker>();
+        controles.OnConnected += ShowPlayers;
+        InitialScreen.SetActive(true);
+        Begin.SetActive(false);
     }
 
     public void StartGame(){
@@ -28,60 +34,24 @@ public class GameController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PlayMode)
-        {
-            Timer -= Time.fixedDeltaTime;
-            timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
+        Timer -= Time.fixedDeltaTime;
+        timerText.text = Timer <= 0 ? "0" : ((int)Timer).ToString();
+        if(Timer <= 0){
+            StartEndingSequence();
         }
-
-        if (Timer <= 0 && !ended)
-        {
-            StartCoroutine(EndingSequence());
-            ended = true;
+        if(controles.deviceIds.Count >= 2){
+            StartGame();
         }
-    }
-
-    private IEnumerator EndingSequence()
-    {
-        MontyController.instance.PausaMontys();
-        Blackout.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
-        
-        // Mover camera 
-        _camera.transform.position = new Vector3(0, 1.2f, -6.5f); 
-        _camera.transform.rotation = Quaternion.Euler(6.7f, 0, 0);
-        
-        PlayerController pAux = PlayerJoin.players[0].GetComponent<PlayerController>();
-
-        if (PlayerJoin.players.Length > 1)
-        {
-            for (int i = 1; i < PlayerJoin.players.Length; i++)
-            {
-                PlayerController p = PlayerJoin.players[i].GetComponent<PlayerController>();
-                if (p.pontos > pAux.pontos)
-                {
-                    pAux = p;
-                }
-            }
-        }
-        
-        // pAux.enabled = true;
-        // pAux.transform.position = new Vector3(0,28.2f,-5.3f);
-        
-        Blackout.SetActive(false);
-        yield return new WaitForSeconds(0.5f);
-        Wins.SetActive(true);
     }
 
     private IEnumerator StartIntroSequence()
     {
+        PlayMode = true;
         // Desativar a tela inicial
-        InitialScreen.SetActive(false);
-        
+        //InitialScreen.SetActive(false);
+        yield return StartCoroutine(BlackoutTransition());
         // Ativar o blackout por 1 segundo
-        Blackout.SetActive(true);
-        yield return new WaitForSeconds(1f);
-        Blackout.SetActive(false);
+        AtivarPlayers();
         yield return new WaitForSeconds(1f);
         Begin.SetActive(true);
         yield return new WaitForSeconds(0.5f);
@@ -94,9 +64,7 @@ public class GameController : MonoBehaviour
 
         float duration = 1f;
         float elapsedTime = 0f;
-        Vector3 startPosition = _camera.transform.position;
-        Quaternion startRotation = _camera.transform.rotation;
-
+        _camera.transform.GetPositionAndRotation(out Vector3 startPosition, out Quaternion startRotation);
         while (elapsedTime < duration)
         {
             _camera.transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / duration);
@@ -109,8 +77,57 @@ public class GameController : MonoBehaviour
         _camera.transform.position = targetPosition;
         _camera.transform.rotation = targetRotation;
 
-        // Ativar PlayMode
-        MontyController.instance.StartMontys();
-        PlayMode = true;
+    }
+
+    private IEnumerator StartEndingSequence(){
+        PlayMode = false;
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(BlackoutTransition());
+    }
+
+    private IEnumerator BlackoutTransition(){
+        float duration = 2f;
+        float halfDuration = duration / 2f;
+        // Acender gradualmente
+        for (float t = 0; t < halfDuration; t += Time.deltaTime)
+        {
+            SetAlpha(t / halfDuration);
+            yield return null;
+        }
+        SetAlpha(1); // Garante que fique totalmente visível
+        InitialScreen.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        // Apagar gradualmente
+        for (float t = 0; t < halfDuration; t += Time.deltaTime)
+        {
+            SetAlpha(1 - (t / halfDuration));
+            yield return null;
+        }
+        SetAlpha(0); // Garante que fique totalmente invisível
+    }
+
+    private void SetAlpha(float alpha)
+    {
+        if (Blackout != null)
+        {
+            Color color = Blackout.color;
+            color.a = alpha;
+            Blackout.color = color;
+        }
+    }
+
+    public void ShowPlayers(){
+        PlayerProfile[playerCount].color = selectedColor;
+        ReadyText[playerCount].SetActive(true);
+        playerCount++;
+    }
+
+    public void AtivarPlayers(){
+        for (int i = 0; i < controles.deviceIds.Count; i++)
+        {
+            jogadores[i].gameObject.SetActive(true);
+            jogadores[i].Id = controles.deviceIds[i];
+            Debug.Log($"Jogador {jogadores[i].Id} vinculado aos id {controles.deviceIds[i]}");
+        }
     }
 }

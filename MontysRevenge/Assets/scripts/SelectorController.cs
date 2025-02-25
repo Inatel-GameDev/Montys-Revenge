@@ -23,6 +23,7 @@ public class SelectorController : MonoBehaviour
     public PlayerController player;
     public bool canMove;
     InputDirection dir;
+    public int Id;
 
     void Start()
     {
@@ -35,9 +36,12 @@ public class SelectorController : MonoBehaviour
     }
 
     // Método chamado pelo Player Input
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext context)
     {
-        dir = GetInputDirection(value.Get<Vector2>());
+        if(context.control.device.deviceId == Id){
+            dir = GetInputDirection(context.ReadValue<Vector2>());
+        }
+       
     }
 
     public InputDirection GetInputDirection(Vector2 input)
@@ -70,9 +74,12 @@ public class SelectorController : MonoBehaviour
         return InputDirection.None;
     }
 
-    public void OnAttack()
+    public void OnAttack(InputAction.CallbackContext context)
     {
-        if(!player.isHit){
+        if (context.started) // Verifica se o botão foi pressionado
+        {
+        Debug.Log($"Bateu com device: {context.control.device.deviceId} de id: {Id}");
+        if(!player.isHit && context.control.device.deviceId == Id){
             if (player.isActiveAndEnabled){
                 StartCoroutine(player.Move(1));
             }
@@ -81,6 +88,7 @@ public class SelectorController : MonoBehaviour
                 StartCoroutine(player.Move(-1));
             }
         }
+    }
     }
 
     // Update is called once per frame

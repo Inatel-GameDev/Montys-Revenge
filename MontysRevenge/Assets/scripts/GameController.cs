@@ -68,10 +68,11 @@ public class GameController : MonoBehaviour
 
     public void StartGame(){
         Debug.Log("Start");
-        if(controles.deviceIds.Count >= 2 && !PlayMode && Timer > 0){
+        if(controles.deviceIds.Count >= 1 && !PlayMode && Timer > 0){
             StartCoroutine(StartIntroSequence());
         }
     }
+
 
     private IEnumerator StartIntroSequence()
     {
@@ -111,6 +112,7 @@ public class GameController : MonoBehaviour
         
         montyController.LiberaMontys();
     }
+
 
     private IEnumerator StartEndingSequence(){
         montyController.PausaMontys();

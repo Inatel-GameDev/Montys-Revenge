@@ -18,13 +18,17 @@ public class PlayerController : MonoBehaviour
         nome_txt.text = Nome;
         pontos = 0;
     }
+
+    
     
 
     private void OnEnable() {
         transform.localPosition = Vector3.zero;
         initialPosition = transform.localPosition;
         isOut = true;
+        selector.SomSair();
     }
+
     void FixedUpdate()
     {
         if(!isHit &&  GameController.instance.PlayMode){
@@ -49,6 +53,9 @@ public class PlayerController : MonoBehaviour
         if(dir == 1){
             selector.FlagBuraco();
             isOut = false;
+            if(!isHit){
+                selector.SomEntrar(); 
+            }            
             CoroutineFinished?.Invoke();
             gameObject.SetActive(false);
         }

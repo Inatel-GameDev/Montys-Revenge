@@ -24,6 +24,13 @@ public class SelectorController : MonoBehaviour
     public bool canMove;
     InputDirection dir;
     public int Id;
+    
+    [Header("Sons")]
+    public SoundPlayer soundPlayer;
+    public AudioClip somSair;
+    public AudioClip somEntrar;
+    public AudioClip somAtingido;
+
 
     void Start()
     {
@@ -298,4 +305,17 @@ private IEnumerator Stun()
         yield return new WaitForSeconds(0.15f);
         canMove = true;
     }
+
+    public void SomSair(){
+        soundPlayer.playSound(somSair);
+    }
+
+    public void SomEntrar(){
+        soundPlayer.playSound(somEntrar);
+    }
+
+    public void SomAtingido(){
+        soundPlayer.playSound(somAtingido);
+    }   
+
 }

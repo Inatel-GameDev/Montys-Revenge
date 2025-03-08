@@ -10,4 +10,8 @@ public class SoundPlayer : MonoBehaviour
         audioSource.clip = clip;
         audioSource.Play();
     }
+
+    public void Stop(){
+        audioSource.Stop();
+    }
 }

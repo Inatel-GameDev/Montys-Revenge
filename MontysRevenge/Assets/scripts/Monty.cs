@@ -40,6 +40,8 @@ public class Monty : MonoBehaviour
     public bool batendo;
     public SelectorController selector;
 
+    public SoundPlayer soundPlayer;
+
     void Start()
     {
         batendo = false;
@@ -121,15 +123,22 @@ public class Monty : MonoBehaviour
         selector = buracoAtual.GetComponentInChildren<SelectorController>();
         selector.player.isHit = true;
         Debug.Log("bate");
+        soundPlayer.playSound(Sounds.instance.porrada);
         selector.StunaPlayer();
+        StartCoroutine(SomDano());
         yield return new WaitForSeconds(MontyController.instance.tempoDeBatidas);
-        selector.player.isHit = false;
+        selector.player.isHit = false;        
         buracoAtual.temMonty = false;
         buracoAtual.temPlayer = false;
         buracoAtual = null;
         estadoAtual = EstadosMonty.Buscando;
         MontyController.instance.MontyDisponivel(this);
         batendo = false;
+    }
+
+    IEnumerator SomDano(){
+        yield return new WaitForSeconds(0.4f);
+        selector.SomAtingido();
     }
 
     public void verificaBater(Buraco bu)

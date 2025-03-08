@@ -35,6 +35,9 @@ public class GameController : MonoBehaviour
     public GameObject losers;
 
     public Canvas telaPause;
+    public SoundPlayer soundPlayer;
+    public SoundPlayer soundPlayerEspecial; 
+    public SoundPlayer soundPlayerMusica; 
 
     
     private void Awake()
@@ -44,6 +47,7 @@ public class GameController : MonoBehaviour
     
     private void Start()
     {
+        soundPlayerMusica.playSound(Sounds.instance.musicaSelecao);
         controles = GetComponentInChildren<InputDeviceTracker>();
         controles.OnConnected += ShowPlayers;
         InitialScreen.SetActive(true);
@@ -61,6 +65,8 @@ public class GameController : MonoBehaviour
             if(Timer <= 0){
                 PlayMode = false;
                 Timer = 0;
+                soundPlayerMusica.Stop();
+                soundPlayer.playSound(Sounds.instance.finish);
                 StartCoroutine(StartEndingSequence());
             }
         }
@@ -76,6 +82,7 @@ public class GameController : MonoBehaviour
 
     private IEnumerator StartIntroSequence()
     {
+        soundPlayerMusica.playSound(Sounds.instance.musicaJogo);
         montyController.PausaMontys();
         
 
@@ -103,6 +110,7 @@ public class GameController : MonoBehaviour
         
         yield return new WaitForSeconds(1f);
         Begin.SetActive(true);
+        soundPlayer.playSound(Sounds.instance.start);
         yield return new WaitForSeconds(0.5f);
         Begin.SetActive(false);
         yield return new WaitForSeconds(0.2f);
@@ -111,6 +119,7 @@ public class GameController : MonoBehaviour
         AtivarPlayers();
         
         montyController.LiberaMontys();
+        
     }
 
 
@@ -122,6 +131,9 @@ public class GameController : MonoBehaviour
         yield return StartCoroutine(BlackoutTransition(false));
         CheckWinner();
         WinningScreen.SetActive(true);
+        soundPlayer.playSound(Sounds.instance.winner);
+        soundPlayerEspecial.playSound(Sounds.instance.vitoria);
+        soundPlayerMusica.playSound(Sounds.instance.musicaVitoria);
         yield return StartCoroutine(FadeImages(Wins_text));
         StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 1f));
         yield return new WaitForSeconds(2f);
@@ -169,6 +181,7 @@ public class GameController : MonoBehaviour
             float t = elapsedTime / 0.15f;
             
             // Ajustar o alpha das imagens
+
             UI_Image.color = new Color(parentInitialColor.r, parentInitialColor.g, parentInitialColor.b, Mathf.Lerp(0f, 1f, t));
             Whiteout.color = new Color(childInitialColor.r, childInitialColor.g, childInitialColor.b, Mathf.Lerp(1f, 0f, t));
             UI_Image.transform.localScale = Vector3.Lerp(initialScale, finalScale, t);
@@ -181,7 +194,7 @@ public class GameController : MonoBehaviour
         UI_Image.color = new Color(parentInitialColor.r, parentInitialColor.g, parentInitialColor.b, 1f);
         Whiteout.color = new Color(childInitialColor.r, childInitialColor.g, childInitialColor.b, 0f);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         elapsedTime = 0f;
         while (elapsedTime < 0.2f)
@@ -226,6 +239,22 @@ public class GameController : MonoBehaviour
         PlayerProfile[playerCount].color = selectedColor;
         ReadyText[playerCount].SetActive(true);
         playerCount++;
+        switch(playerCount){
+            case 1: 
+                soundPlayer.playSound(Sounds.instance.mario);
+                break;
+            // Usando soundplayers diferentes para cada som sair em um, acho q 2 sao o suficiente
+            case 2: 
+                soundPlayerEspecial.playSound(Sounds.instance.luigi);
+                break;
+            case 3: 
+                soundPlayer.playSound(Sounds.instance.wario);
+                break;
+            case 4: 
+                soundPlayerEspecial.playSound(Sounds.instance.luigi);
+                break;
+
+        }
     }
 
     public void AtivarPlayers(){

@@ -3,8 +3,11 @@ using UnityEngine;
 public class Sounds : MonoBehaviour
 {
     public static Sounds instance;
+
     [Header("Ambiente")]
-    public AudioClip musica;
+    public AudioClip musicaJogo;
+    public AudioClip musicaSelecao;
+    public AudioClip musicaVitoria;
     public AudioClip start;
     public AudioClip finish;
     public AudioClip winner;
@@ -14,11 +17,11 @@ public class Sounds : MonoBehaviour
     public AudioClip porrada;
     public AudioClip andar;
 
-    [Header("Monty")]
-    public AudioClip sair;
-    public AudioClip entrar;
-    public AudioClip atingido;
-
+    [Header("Jogadores")]
+    public AudioClip mario;
+    public AudioClip luigi;
+    public AudioClip wario;
+    public AudioClip waluigi;
 
     void Awake()
     {

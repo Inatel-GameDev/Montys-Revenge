@@ -10,6 +10,8 @@ public class GameController : MonoBehaviour
     public TMP_Text timerText;
     public float Timer ;
     public Camera _camera;
+    public Vector3 posicaoFinalCamera;
+    public Quaternion rotacaoFinalCamera;
     public GameObject InitialScreen;
     public Image Blackout;
     public Image Finish_text;
@@ -124,6 +126,10 @@ public class GameController : MonoBehaviour
 
 
     private IEnumerator StartEndingSequence(){
+        
+        // _camera.transform.position = posicaoFinalCamera;
+        // _camera.transform.rotation = rotacaoFinalCamera;
+        
         montyController.PausaMontys();
         PlayMode = false;
         yield return StartCoroutine(FadeImages(Finish_text));
@@ -135,8 +141,9 @@ public class GameController : MonoBehaviour
         soundPlayerEspecial.playSound(Sounds.instance.vitoria);
         soundPlayerMusica.playSound(Sounds.instance.musicaVitoria);
         yield return StartCoroutine(FadeImages(Wins_text));
-        StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 1f));
-        yield return new WaitForSeconds(2f);
+        //StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 1f));
+        StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 5f));
+        yield return new WaitForSeconds(7f);
         telaPause.gameObject.SetActive(true);
       
     }
@@ -273,10 +280,12 @@ public class GameController : MonoBehaviour
         SelectorController winner = jogadores.OrderByDescending(sc => sc.player.pontos).FirstOrDefault();
         winnerName.text = winner.player.Nome;
         
+        
         // Posicionar o vencedor na posição desejada
         if (winner != null)
         {
-            winner.transform.position = winnerPosition.transform.position;
+            winner.player.gameObject.SetActive(true);
+            winner.player.transform.position = winnerPosition.transform.position;
         }
         
         // Definir os outros players como filhos de groupParent
@@ -284,7 +293,8 @@ public class GameController : MonoBehaviour
         {
             if (sc != winner)
             {
-                sc.transform.SetParent(losers.transform);
+                sc.player.gameObject.SetActive(true);
+                sc.player.transform.SetParent(losers.transform);
             }
         }
     }

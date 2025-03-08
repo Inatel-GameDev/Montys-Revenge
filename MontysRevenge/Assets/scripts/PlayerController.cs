@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     
 
     private void OnEnable() {
+        if(!GameController.instance.PlayMode)
+            return;
         transform.localPosition = Vector3.zero;
         initialPosition = transform.localPosition;
         isOut = true;

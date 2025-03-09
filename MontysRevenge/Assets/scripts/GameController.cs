@@ -296,8 +296,8 @@ public class GameController : MonoBehaviour
         // Definir os outros players como filhos de groupParent
         losers.SetActive(true);
         // posições para fazerem uma fila 
-        // tem q arrumar para quando o vencedor n for o primeiro 
-        int[] posicoes = new int[]{10, 8, 6, 4};
+        int[] posicoes = new int[]{8, 6, 4};
+        int p = 0;
         //foreach (var sc in jogadores)
         for( int i= 0; i < jogadores.Length; i++)
         {
@@ -316,6 +316,8 @@ public class GameController : MonoBehaviour
 
                 GameObject modeloPersonagem = Instantiate(modelo, losers.transform);
                 modeloPersonagem.transform.position = new Vector3(posicoes[i], -0.15f, 1);
+                // segundo contador pq tem o ganhador no meio da lista q precisa ser ignorado
+                p++;
 
                 // jogadores[i].player.gameObject.SetActive(true);
                 // jogadores[i].player.transform.SetParent(losers.transform);

@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviour
         float t = 0f;
         float duration = 0.15f;
         float moveAmount = 10f;
-        
         while (t < duration)
         {
             // Movimento no eixo Z

@@ -26,7 +26,7 @@ public class InputDeviceTracker : MonoBehaviour
 
          if (control.device is Mouse)
         {
-            Debug.Log("Mouse detectado, não será registrado.");
+            // Debug.Log("Mouse detectado, não será registrado.");
             return; // Não registra o mouse
         }
         

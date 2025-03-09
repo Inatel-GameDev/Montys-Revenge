@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     public Vector3 posicaoFinalCamera;
     public Quaternion rotacaoFinalCamera;
     public GameObject InitialScreen;
+    public Button botaoAmarelo;
     public Image Blackout;
     public Image Finish_text;
     public Image Wins_text;
@@ -41,6 +42,10 @@ public class GameController : MonoBehaviour
     public SoundPlayer soundPlayerEspecial; 
     public SoundPlayer soundPlayerMusica; 
 
+    public GameObject modeloMario;
+    public GameObject modeloLuigi;
+    public GameObject modeloWario;
+    public GameObject modeloWaluigi;
     
     private void Awake()
     {
@@ -131,6 +136,7 @@ public class GameController : MonoBehaviour
         // _camera.transform.rotation = rotacaoFinalCamera;
         
         montyController.PausaMontys();
+        montyController.gameObject.SetActive(false);
         PlayMode = false;
         yield return StartCoroutine(FadeImages(Finish_text));
         yield return new WaitForSeconds(0.2f);
@@ -141,11 +147,9 @@ public class GameController : MonoBehaviour
         soundPlayerEspecial.playSound(Sounds.instance.vitoria);
         soundPlayerMusica.playSound(Sounds.instance.musicaVitoria);
         yield return StartCoroutine(FadeImages(Wins_text));
-        //StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 1f));
-        StartCoroutine(Move(losers, new(1.8f, 0.15f, -0.15f), new(-1.5f, 0.15f, -0.15f), 5f));
-        yield return new WaitForSeconds(7f);
-        telaPause.gameObject.SetActive(true);
-      
+        StartCoroutine(Move(losers, new(8f, 0, 1f), new(-12f, 0, 1f), 4f));
+        yield return new WaitForSeconds(5f);
+        telaPause.gameObject.SetActive(true);      
     }
 
     private IEnumerator BlackoutTransition(bool isStart){
@@ -161,6 +165,7 @@ public class GameController : MonoBehaviour
 
         if(isStart){
             InitialScreen.SetActive(false);
+            botaoAmarelo.gameObject.SetActive(false);
         }else{
             _camera.transform.position = endingPosition;
             _camera.transform.rotation = Quaternion.Euler(25, _camera.transform.rotation.eulerAngles.y, _camera.transform.rotation.eulerAngles.z);;
@@ -289,13 +294,33 @@ public class GameController : MonoBehaviour
         }
         
         // Definir os outros players como filhos de groupParent
-        foreach (var sc in jogadores)
+        losers.SetActive(true);
+        // posições para fazerem uma fila 
+        // tem q arrumar para quando o vencedor n for o primeiro 
+        int[] posicoes = new int[]{10, 8, 6, 4};
+        //foreach (var sc in jogadores)
+        for( int i= 0; i < jogadores.Length; i++)
         {
-            if (sc != winner)
+            if (jogadores[i] != winner)
             {
-                sc.player.gameObject.SetActive(true);
-                sc.player.transform.SetParent(losers.transform);
+                GameObject modelo = modeloMario;
+                if(jogadores[i].name == "Mario"){
+                    modelo = modeloMario;
+                } else if(jogadores[i].name == "Luigi"){
+                    modelo = modeloLuigi;
+                } else if(jogadores[i].name == "Wario"){
+                    modelo = modeloWario;
+                } else {
+                    modelo = modeloWaluigi;
+                }
+
+                GameObject modeloPersonagem = Instantiate(modelo, losers.transform);
+                modeloPersonagem.transform.position = new Vector3(posicoes[i], -0.15f, 1);
+
+                // jogadores[i].player.gameObject.SetActive(true);
+                // jogadores[i].player.transform.SetParent(losers.transform);
             }
+            
         }
     }
 }

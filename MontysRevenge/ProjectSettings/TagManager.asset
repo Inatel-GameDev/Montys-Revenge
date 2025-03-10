@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Buraco
+  - Mario
+  - Luigi
+  - Waluigi
+  - Wario
   layers:
   - Default
   - TransparentFX

@@ -42,10 +42,10 @@ public class GameController : MonoBehaviour
     public SoundPlayer soundPlayerEspecial; 
     public SoundPlayer soundPlayerMusica; 
 
-    public GameObject modeloMario;
-    public GameObject modeloLuigi;
-    public GameObject modeloWario;
-    public GameObject modeloWaluigi;
+    public GameObject modeloMarioLoser;
+    public GameObject modeloLuigiLoser;
+    public GameObject modeloWarioLoser;
+    public GameObject modeloWaluigiLoser;
     
     private void Awake()
     {
@@ -293,31 +293,39 @@ public class GameController : MonoBehaviour
             winner.player.transform.position = winnerPosition.transform.position;
         }
         
-        // Definir os outros players como filhos de groupParent
-        losers.SetActive(true);
-        // posições para fazerem uma fila 
-        int[] posicoes = new int[]{8, 6, 4};
-        int p = 0;
+        losers.SetActive(true);        
+        int p = 10;
         //foreach (var sc in jogadores)
         for( int i= 0; i < jogadores.Length; i++)
         {
             if (jogadores[i] != winner)
-            {
-                GameObject modelo = modeloMario;
-                if(jogadores[i].name == "Mario"){
-                    modelo = modeloMario;
-                } else if(jogadores[i].name == "Luigi"){
-                    modelo = modeloLuigi;
-                } else if(jogadores[i].name == "Wario"){
-                    modelo = modeloWario;
+            {                
+                if(jogadores[i].player.Nome == "Mario"){
+                    modeloMarioLoser.SetActive(true);
+                    modeloWarioLoser.transform.position = new Vector3(p,0,1);       
+                    p--;             
+                    Debug.Log("Mario Loser" + p);
+                } else if(jogadores[i].player.Nome == "Luigi"){
+                    modeloLuigiLoser.SetActive(true);
+                    modeloLuigiLoser.transform.position = new Vector3(p,0,1);       
+                    p--;             
+                    Debug.Log("Luigi Loser" + p);
+                } else if(jogadores[i].player.Nome == "Wario"){
+                    modeloWarioLoser.SetActive(true);
+                    modeloWarioLoser.transform.position = new Vector3(p,0,1);       
+                    p--;         
+                    Debug.Log("Wario Loser" + p);    
                 } else {
-                    modelo = modeloWaluigi;
+                    modeloWaluigiLoser.SetActive(true);
+                    modeloWaluigiLoser.transform.position = new Vector3(p,0,1);     
+                    Debug.Log("Waluigi Loser" + p);
+                    p--;             
                 }
-
-                GameObject modeloPersonagem = Instantiate(modelo, losers.transform);
-                modeloPersonagem.transform.position = new Vector3(posicoes[i], -0.15f, 1);
+                // GameObject modeloPersonagem = Instantiate(modelo, losers.transform);
+                // modeloPersonagem.SetActive(true);
+                // modeloPersonagem.transform.position = new Vector3(posicoes[p], -0.15f, 1);
                 // segundo contador pq tem o ganhador no meio da lista q precisa ser ignorado
-                p++;
+                // p++;
 
                 // jogadores[i].player.gameObject.SetActive(true);
                 // jogadores[i].player.transform.SetParent(losers.transform);

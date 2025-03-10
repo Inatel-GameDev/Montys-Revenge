@@ -42,6 +42,9 @@ public class Monty : MonoBehaviour
 
     public SoundPlayer soundPlayer;
 
+    // poppyves
+    public GameObject martelo;
+
     void Start()
     {
         batendo = false;
@@ -77,6 +80,7 @@ public class Monty : MonoBehaviour
             else
             {
                 move();
+                // StartCoroutine(Andar());
             }
         }
 
@@ -103,12 +107,12 @@ public class Monty : MonoBehaviour
         
         Quaternion targetRotation = Quaternion.LookRotation(pos - transform.position);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, MontyController.instance.velocidadeDeGiro * Time.deltaTime);
-        //transform.rotation = targetRotation;
+
         
         transform.position = Vector3.MoveTowards(
             transform.position,
             pos
-            , MontyController.instance.speed * Time.deltaTime);
+            , MontyController.instance.speed * Time.deltaTime);        
     }
 
     // Condição entrada 
@@ -116,10 +120,12 @@ public class Monty : MonoBehaviour
     {
         buracoAlvo = buraco;
         estadoAtual = EstadosMonty.Seguindo;
+        StartCoroutine(Vai());
     }
 
     IEnumerator bater()
     {
+        StartCoroutine(Martelar());
         selector = buracoAtual.GetComponentInChildren<SelectorController>();
         selector.player.isHit = true;
         Debug.Log("bate");
@@ -139,6 +145,53 @@ public class Monty : MonoBehaviour
     IEnumerator SomDano(){
         yield return new WaitForSeconds(0.4f);
         selector.SomAtingido();
+    }
+    IEnumerator Vai(){
+
+        transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z), 0.5f);
+
+        yield return new WaitForSeconds(0.5f);
+        
+        if(estadoAtual == EstadosMonty.Seguindo){
+            StartCoroutine(Volta());
+        }
+    }
+
+        IEnumerator Volta(){
+
+        transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, transform.position.y - 0.1f, transform.position.z), 0.5f);
+        yield return new WaitForSeconds(0.5f);
+        if(estadoAtual == EstadosMonty.Seguindo){
+            StartCoroutine(Vai());
+        }
+    }
+
+    // poppyves
+    IEnumerator Martelar(){
+        float duration = 0.3f;
+        float elapsedTime = 0f;
+        while (elapsedTime < duration){
+            
+
+            martelo.gameObject.transform.rotation = Quaternion.Lerp(
+                Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z),
+                Quaternion.Euler(transform.rotation.eulerAngles.x + 90, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z)
+                , elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        duration = 0.3f;
+        elapsedTime = 0;
+        while (elapsedTime < duration){
+            
+            martelo.gameObject.transform.rotation = Quaternion.Lerp(
+                Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z),
+                Quaternion.Euler(transform.rotation.eulerAngles.x - 90, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z),
+                elapsedTime += Time.deltaTime);
+
+            yield return null;
+        }
     }
 
     public void verificaBater(Buraco bu)

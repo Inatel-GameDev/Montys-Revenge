@@ -11,6 +11,9 @@ public class StartMenu : MonoBehaviour
     public Canvas startMenu;
     public Canvas tutorial;
 
+    public Image[] images;
+    public int x;
+
     private void Start()
     {
         newGame.onClick.AddListener(StartNewGame);    
@@ -34,12 +37,15 @@ public class StartMenu : MonoBehaviour
     {
         tutorial.gameObject.SetActive(true);
         startMenu.gameObject.SetActive(false);
+        x = Random.Range(0,10);
+        images[x].gameObject.SetActive(true);
     }
 
     private void Voltar()
     {
         startMenu.gameObject.SetActive(true);
         tutorial.gameObject.SetActive(false);
+        images[x].gameObject.SetActive(false);
     }
     
 }

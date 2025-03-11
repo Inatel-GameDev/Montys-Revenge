@@ -256,6 +256,7 @@ public class GameController : MonoBehaviour
         PlayerProfile[playerCount].color = selectedColor;
         ReadyText[playerCount].SetActive(true);
         playerCount++;
+        Debug.Log(playerCount);
         switch(playerCount){
             case 1: 
                 soundPlayer.playSound(Sounds.instance.mario);

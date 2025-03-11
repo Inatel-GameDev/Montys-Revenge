@@ -31,6 +31,8 @@ public class SelectorController : MonoBehaviour
     public AudioClip somEntrar;
     public AudioClip somAtingido;
 
+    [Header("Efeitos")]
+    public ParticleSystem poeira;
 
     void Start()
     {
@@ -40,6 +42,7 @@ public class SelectorController : MonoBehaviour
         buracoAtual = buracoInicial.GetComponent<Buraco>();
         transform.localPosition = new Vector3(0,0.71f,0);
         Placar.SetActive(true);
+        //poeira = GetComponent<ParticleSystem>();
     }
 
     // Método chamado pelo Player Input
@@ -308,6 +311,7 @@ private IEnumerator Stun()
 
     public void SomSair(){
         soundPlayer.playSound(somSair);
+        poeira.Play();
     }
 
     public void SomEntrar(){
@@ -315,6 +319,8 @@ private IEnumerator Stun()
     }
 
     public void SomAtingido(){
+        Debug.Log("Atingido");
+        player.estrelas.Play();
         soundPlayer.playSound(somAtingido);
     }   
 

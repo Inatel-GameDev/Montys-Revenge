@@ -14,12 +14,14 @@ public class PlayerController : MonoBehaviour
     public SelectorController selector;
     public TMP_Text nome_txt;
     public TMP_Text pontos_txt;
+
+    [Header("Efeitos")]
+    public ParticleSystem estrelas;
+
     private void Start() {
         nome_txt.text = Nome;
         pontos = 0;
     }
-
-    
     
 
     private void OnEnable() {

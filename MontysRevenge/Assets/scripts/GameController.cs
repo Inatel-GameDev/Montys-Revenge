@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
     public Image Whiteout;
     public GameObject Begin;
     public bool PlayMode = false;
+    private bool hasStarted = false;
+    private bool hasEnded = false;
     InputDeviceTracker controles;
     public SelectorController[] jogadores;
     public GameObject[] podio;
@@ -74,7 +76,8 @@ public class GameController : MonoBehaviour
                 Timer = 0;
                 soundPlayerMusica.Stop();
                 soundPlayer.playSound(Sounds.instance.finish);
-                StartCoroutine(StartEndingSequence());
+                if(!hasEnded)
+                    StartCoroutine(StartEndingSequence());
             }
         }
     }
@@ -82,13 +85,15 @@ public class GameController : MonoBehaviour
     public void StartGame(){
         Debug.Log("Start");
         if(controles.deviceIds.Count >= 1 && !PlayMode && Timer > 0){
-            StartCoroutine(StartIntroSequence());
+            if(!hasStarted)
+                StartCoroutine(StartIntroSequence());
         }
     }
 
 
     private IEnumerator StartIntroSequence()
     {
+        hasStarted = true;
         soundPlayerMusica.playSound(Sounds.instance.musicaJogo);
         montyController.PausaMontys();
         
@@ -134,7 +139,7 @@ public class GameController : MonoBehaviour
         
         // _camera.transform.position = posicaoFinalCamera;
         // _camera.transform.rotation = rotacaoFinalCamera;
-        
+        hasEnded = true;
         montyController.PausaMontys();
         montyController.gameObject.SetActive(false);
         PlayMode = false;
